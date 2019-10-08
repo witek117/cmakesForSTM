@@ -37,6 +37,7 @@ ReadVariables(${CMAKE_CURRENT_SOURCE_DIR}/Makefile "C_INCLUDES")
 
 set(HAL_INCLUDES "")
 foreach(incc ${C_INCLUDES})
+	string(REPLACE "-I" "" incc ${incc})
 	set(HAL_INCLUDES "${HAL_INCLUDES}; ${incc} ")
 endforeach(incc)
 
