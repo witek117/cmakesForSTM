@@ -14,8 +14,9 @@ message(STATUS "Target platform ${TARGET}")
 
 include(functions.cmake)
 include(${PLATFORM_PATH}/toolchain.cmake)
+load_submodules()
 
-project(frontend C CXX ASM)
+project(ZUMO C CXX ASM)
 
 SET(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -flto -DLOG_LEVEL=LOG_LEVEL_ALL")
 SET(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG -flto")
@@ -40,4 +41,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_PATH}/bin)
 
 add_subdirectory(core)
+
 add_subdirectory(${PLATFORM_PATH})

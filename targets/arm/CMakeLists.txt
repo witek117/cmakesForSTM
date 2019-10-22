@@ -1,11 +1,17 @@
 set(NAME arm)
 
+ReadVariables(${CMAKE_CURRENT_LIST_DIR}/Makefile "LDSCRIPT")
+string(REPLACE "_FLASH.ld" "" DEVICE ${LDSCRIPT} )
+string(LENGTH ${DEVICE} DEVICE_LENGTH)
+math(EXPR DEVICE_LENGTH "${DEVICE_LENGTH} - 2")
+string(SUBSTRING ${DEVICE} 0 ${DEVICE_LENGTH} DEVICE)
+
 function(LOAD_DRIVERS)
 	file(GLOB_RECURSE SOURCES
 			*.c
-            *.cpp
+			*.cpp
 			*.h
-            *.hpp
+			*.hpp
 			*.s
 			)
 	add_library(Drivers INTERFACE)
@@ -26,12 +32,14 @@ foreach(file ${allDriversFiles})
 	set_source_files_properties(${file} PROPERTIES COMPILE_FLAGS "-w")
 endforeach(file)
 
+set_source_files_properties(Src/syscalls.c PROPERTIES COMPILE_FLAGS "-w")
+
 file(GLOB_RECURSE SOURCES_AUTO
 		Inc/*.h
 		Src/*.c
 		Src/*.cpp
 		*.s
-)
+		)
 
 ReadVariables(${CMAKE_CURRENT_SOURCE_DIR}/Makefile "C_INCLUDES")
 
@@ -46,17 +54,17 @@ include_directories(
 )
 
 set(SOURCES
-	${SOURCES_AUTO} ${C_SOURCES}
-)
+		${SOURCES_AUTO} ${C_SOURCES}
+		)
 
 add_executable(${NAME} ${SOURCES})
 
-set_target_properties(${NAME} PROPERTIES LINK_FLAGS "-T ${PLATFORM_LINKER_SCRIPT} -Wl,--gc-sections --specs=nano.specs -lc")
+set_target_properties(${NAME} PROPERTIES LINK_FLAGS "-T ${PLATFORM_LINKER_SCRIPT} -Wl,--gc-sections -specs=nano.specs -specs=nosys.specs -flto -lc ")
 
 target_link_libraries(${NAME}
-	core
-	Drivers
-)
+		core
+		Drivers
+		)
 
 target_generate_hex(${NAME})
 
@@ -64,3 +72,7 @@ target_memory_report(${NAME})
 target_asm_listing(${NAME})
 
 target_format_sources(${NAME} "${SOURCES_PROJECT}")
+
+target_jlink_flash(${NAME} 0x8000000)
+
+target_stlink_flash(${NAME})
