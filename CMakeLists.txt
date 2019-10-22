@@ -16,7 +16,7 @@ include(functions.cmake)
 include(${PLATFORM_PATH}/toolchain.cmake)
 load_submodules()
 
-project(ZUMO C CXX ASM)
+project(PROJECT_NAME C CXX ASM)
 
 SET(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -flto -DLOG_LEVEL=LOG_LEVEL_ALL")
 SET(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG -flto")
