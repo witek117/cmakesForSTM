@@ -27,6 +27,20 @@ function(target_generate_hex TARGET)
     add_custom_target (${TARGET}.hex ALL DEPENDS ${HEX_OBJ})
 endfunction(target_generate_hex)
 
+function(target_generate_elf TARGET)
+    set (EXEC_OBJ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET})
+    set (ELF_OBJ ${EXEC_OBJ}.elf)
+
+    set_target_properties(${TARGET} PROPERTIES ELF_FILE ${ELF_OBJ})
+
+    add_custom_command(OUTPUT ${ELF_OBJ}
+            COMMAND ${CMAKE_OBJCOPY} ${EXEC_OBJ} ${ELF_OBJ}
+            DEPENDS ${TARGET}.size
+            )
+
+    add_custom_target (${TARGET}.elf ALL DEPENDS ${ELF_OBJ})
+endfunction(target_generate_elf)
+
 function(target_memory_report TARGET)
     get_property(binary TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_NAME)
 
