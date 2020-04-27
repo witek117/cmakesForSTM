@@ -15,16 +15,19 @@ message(STATUS "Target platform ${TARGET}")
 include(functions.cmake)
 include(${PLATFORM_PATH}/toolchain.cmake)
 
-project(PROJECT_NAME C CXX ASM)
+set(TEMP_TARGET ${TARGET})
+ReadVariables(${CMAKE_CURRENT_LIST_DIR}/targets/arm/Makefile "TARGET")
+project(${TARGET} C CXX ASM)
+set(TARGET ${TEMP_TARGET})
 
 SET(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -flto -DLOG_LEVEL=LOG_LEVEL_ALL")
 SET(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG -flto")
 
-SET(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g -DLOG_LEVEL=LOG_LEVEL_ALL")
-SET(CMAKE_C_FLAGS_DEBUG  "-O0 -g")
+SET(CMAKE_CXX_FLAGS_DEBUG  "-Os -g -DLOG_LEVEL=LOG_LEVEL_ALL")
+SET(CMAKE_C_FLAGS_DEBUG  "-Os -g")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D'__FILENAME__=\"$(subst $(realpath ${CMAKE_SOURCE_DIR})/,,$(abspath $<))\"'")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D'__FILENAME__=\"$(subst $(realpath ${CMAKE_SOURCE_DIR})/,,$(abspath $<))\"'")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
 
 include(${PLATFORM_PATH}/settings.cmake)
 

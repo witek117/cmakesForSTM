@@ -1,0 +1,15 @@
+.idea
+
+cmake-build-debug
+cmake-build-default
+cmake-build-release
+
+
+/targets/arm/Drivers/
+/targets/arm/Inc/
+/targets/arm/Src/
+/targets/arm/.mxproject
+/targets/arm/l4.ioc
+/targets/arm/Makefile
+/targets/arm/startup_stm32l476xx.s
+/targets/arm/STM32L476RGTx_FLASH.ld
