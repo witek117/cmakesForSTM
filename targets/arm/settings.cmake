@@ -1,4 +1,4 @@
-set(CWARN               "-Wall -Wstrict-prototypes -Wextra -Werror")
+set(CWARN               "-Wall -Wextra -Werror") #-Wstrict-prototypes
 set(CXXWARN             "-Wall -Wextra -Werror")
 set(CTUNING             "-fomit-frame-pointer -ffunction-sections -fdata-sections")
 
