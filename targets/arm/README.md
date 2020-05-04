@@ -12,7 +12,7 @@ Structure of directory should look like:
  - CMakeLists.txt
  - Makefile
  - settings.cmake
- - startup_stm32fXXXXX.s
+ - startup_stm32XXXXXX.s
  - STM32FXXXXXXXX_FLASH.ld
  - toolchain.cmake
  - project_name.ioc
