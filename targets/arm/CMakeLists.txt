@@ -16,6 +16,8 @@ file(GLOB_RECURSE SOURCES_AUTO
 		Drivers/*.c
 		Src/*.c
 		Src/*.cpp
+		Core/Src/*.c
+		Core/Src/*.cpp
 		*.s
 )
 
@@ -50,4 +52,4 @@ add_custom_command(TARGET ${NAME}
 
 target_jlink_flash(${NAME} 0x8000000)
 
-target_stlink_flash(${NAME} stm32f3x.cfg)
+target_stlink_flash(${NAME} stm32f4x.cfg)

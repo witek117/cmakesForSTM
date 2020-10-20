@@ -36,3 +36,29 @@
 - in Windows add **-G "MinGW Makefiles"**
 
 ## 3. VS Code
+
+
+# SWO debug 
+In C or C++ code write:
+```C
+int _write(int file, char *ptr, int len) {
+    (void) file;
+    int DataIdx;
+    for (DataIdx = 0; DataIdx < len; DataIdx++){
+        ITM_SendChar(*ptr++);
+    }
+    return len;
+}
+```
+
+And use printf:
+```C
+printf("Hello world\n");
+```
+
+Using openOCD:
+```
+openocd -f board/stm32f4discovery.cfg -f interface/stlink.cfg -c "transport select hla_swd"  -c "tpiu config internal - uart off clock_rate" -c "itm ports on" -c "tcl_port 6666"
+```
+
+Where clock_rate should be changed with number, ex. 180000000 for 180 MHz
