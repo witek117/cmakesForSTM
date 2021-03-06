@@ -89,36 +89,45 @@ function(ReadVariables MKFile VARIABLE_NAME)
 endfunction()
 
 function(target_jlink_flash TARGET BASE_ADDRESS)
-    set(COMMAND_FILE ${CMAKE_BINARY_DIR}/jlink/${TARGET}.flash.jlink)
+    if(NOT "${JLINK}" STREQUAL "JLINK-NOTFOUND")
+        if ("${DEVICE}" STREQUAL "")
+            message(WARNING "DEVICE not set. JLink might not work properly.")
+        endif()
 
-    get_property(FLASH_FILE TARGET ${TARGET} PROPERTY HEX_FILE)
+        set(COMMAND_FILE ${CMAKE_BINARY_DIR}/jlink/${TARGET}.flash.jlink)
 
-    if("${FLASH_FILE}" STREQUAL "")
-        get_property(FLASH_FILE TARGET ${TARGET} PROPERTY BIN_FILE)
+        get_property(FLASH_FILE TARGET ${TARGET} PROPERTY HEX_FILE)
+
+        if("${FLASH_FILE}" STREQUAL "")
+            get_property(FLASH_FILE TARGET ${TARGET} PROPERTY BIN_FILE)
+        endif()
+
+        if("${FLASH_FILE}" STREQUAL "")
+            set(FLASH_FILE ${CMAKE_BINARY_DIR}/build/${TARGET}/bin/${TARGET}.hex)
+        endif()
+
+        configure_file(${CMAKE_SOURCE_DIR}/jlink/flash.jlink.template ${COMMAND_FILE})
+
+        unset(FLASH_FILE)
+
+        set(JLINK_ARGS
+                "-device" ${DEVICE}
+                "-ExitOnError"
+                "-CommanderScript" ${COMMAND_FILE}
+                )
+
+        if(NOT ${JLINK_SN} STREQUAL "")
+            list(APPEND JLINK_ARGS -SelectEmuBySN ${JLINK_SN})
+        endif()
+
+        add_custom_target(${TARGET}.flash_jlink
+                COMMAND ${JLINK} ${JLINK_ARGS}
+                DEPENDS ${TARGET} ${FLASH_FILE}
+                WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+                )
+    else()
+        message(WARNING "JLink not found in PATH")
     endif()
-
-    configure_file(${CMAKE_SOURCE_DIR}/jlink/flash.jlink.template ${COMMAND_FILE})
-
-    unset(FLASH_FILE)
-
-    message("Device ${DEVICE}")
-
-    set(JLINK_ARGS
-            "-device" ${DEVICE}
-            "-ExitOnError"
-            "-CommanderScript" ${COMMAND_FILE}
-            )
-
-    if(NOT ${JLINK_SN} STREQUAL "")
-        list(APPEND JLINK_ARGS -SelectEmuBySN ${JLINK_SN})
-    endif()
-
-    add_custom_target(${TARGET}.flash_jlink
-            COMMAND ${JLINK} ${JLINK_ARGS}
-            DEPENDS ${TARGET}.hex ${FLASH_FILE}
-            WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            )
-
 endfunction(target_jlink_flash)
 
 function(target_stlink_flash TARGET CONFIG)

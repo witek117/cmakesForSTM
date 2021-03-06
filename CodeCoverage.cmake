@@ -88,29 +88,29 @@ elseif(NOT CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 set(COVERAGE_COMPILER_FLAGS "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
-    CACHE INTERNAL "")
+        CACHE INTERNAL "")
 
 set(CMAKE_CXX_FLAGS_COVERAGE
-    ${COVERAGE_COMPILER_FLAGS}
-    CACHE STRING "Flags used by the C++ compiler during coverage builds."
-    FORCE )
+        ${COVERAGE_COMPILER_FLAGS}
+        CACHE STRING "Flags used by the C++ compiler during coverage builds."
+        FORCE )
 set(CMAKE_C_FLAGS_COVERAGE
-    ${COVERAGE_COMPILER_FLAGS}
-    CACHE STRING "Flags used by the C compiler during coverage builds."
-    FORCE )
+        ${COVERAGE_COMPILER_FLAGS}
+        CACHE STRING "Flags used by the C compiler during coverage builds."
+        FORCE )
 set(CMAKE_EXE_LINKER_FLAGS_COVERAGE
-    ""
-    CACHE STRING "Flags used for linking binaries during coverage builds."
-    FORCE )
+        ""
+        CACHE STRING "Flags used for linking binaries during coverage builds."
+        FORCE )
 set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE
-    ""
-    CACHE STRING "Flags used by the shared libraries linker during coverage builds."
-    FORCE )
+        ""
+        CACHE STRING "Flags used by the shared libraries linker during coverage builds."
+        FORCE )
 mark_as_advanced(
-    CMAKE_CXX_FLAGS_COVERAGE
-    CMAKE_C_FLAGS_COVERAGE
-    CMAKE_EXE_LINKER_FLAGS_COVERAGE
-    CMAKE_SHARED_LINKER_FLAGS_COVERAGE )
+        CMAKE_CXX_FLAGS_COVERAGE
+        CMAKE_C_FLAGS_COVERAGE
+        CMAKE_EXE_LINKER_FLAGS_COVERAGE
+        CMAKE_SHARED_LINKER_FLAGS_COVERAGE )
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
@@ -150,28 +150,28 @@ function(SETUP_TARGET_FOR_COVERAGE)
     # Setup target
     add_custom_target(${Coverage_NAME}
 
-        # Cleanup lcov
-        COMMAND ${LCOV_PATH} --directory . --zerocounters
+            # Cleanup lcov
+            COMMAND ${LCOV_PATH} --directory . --zerocounters
 
-        # Run tests
-        COMMAND ${Coverage_EXECUTABLE}
+            # Run tests
+            COMMAND ${Coverage_EXECUTABLE}
 
-        # Capturing lcov counters and generating report
-        COMMAND ${LCOV_PATH} --directory . --capture --output-file ${Coverage_NAME}.info
-        COMMAND ${LCOV_PATH} --remove ${Coverage_NAME}.info ${COVERAGE_EXCLUDES} --output-file ${PROJECT_BINARY_DIR}/${Coverage_NAME}.info.cleaned
-        COMMAND ${GENHTML_PATH} -o ${Coverage_NAME} ${PROJECT_BINARY_DIR}/${Coverage_NAME}.info.cleaned
-        COMMAND ${CMAKE_COMMAND} -E remove ${Coverage_NAME}.info ${PROJECT_BINARY_DIR}/${Coverage_NAME}.info.cleaned
+            # Capturing lcov counters and generating report
+            COMMAND ${LCOV_PATH} --directory . --capture --output-file ${Coverage_NAME}.info
+            COMMAND ${LCOV_PATH} --remove ${Coverage_NAME}.info ${COVERAGE_EXCLUDES} --output-file ${PROJECT_BINARY_DIR}/${Coverage_NAME}.info.cleaned
+            COMMAND ${GENHTML_PATH} -o ${Coverage_NAME} ${PROJECT_BINARY_DIR}/${Coverage_NAME}.info.cleaned
+            COMMAND ${CMAKE_COMMAND} -E remove ${Coverage_NAME}.info ${PROJECT_BINARY_DIR}/${Coverage_NAME}.info.cleaned
 
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        DEPENDS ${Coverage_DEPENDENCIES}
-        COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
-    )
+            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+            DEPENDS ${Coverage_DEPENDENCIES}
+            COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
+            )
 
     # Show info where to find the report
     add_custom_command(TARGET ${Coverage_NAME} POST_BUILD
-        COMMAND ;
-        COMMENT "Open ./${Coverage_NAME}/index.html in your browser to view the coverage report."
-    )
+            COMMAND ;
+            COMMENT "Open ./${Coverage_NAME}/index.html in your browser to view the coverage report."
+            )
 
 endfunction() # SETUP_TARGET_FOR_COVERAGE
 
@@ -208,22 +208,22 @@ function(SETUP_TARGET_FOR_COVERAGE_COBERTURA)
 
     add_custom_target(${Coverage_NAME}
 
-        # Run tests
-        ${Coverage_EXECUTABLE}
+            # Run tests
+            ${Coverage_EXECUTABLE}
 
-        # Running gcovr
-        COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} ${COBERTURA_EXCLUDES}
+            # Running gcovr
+            COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} ${COBERTURA_EXCLUDES}
             -o ${Coverage_NAME}.xml
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        DEPENDS ${Coverage_DEPENDENCIES}
-        COMMENT "Running gcovr to produce Cobertura code coverage report."
-    )
+            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+            DEPENDS ${Coverage_DEPENDENCIES}
+            COMMENT "Running gcovr to produce Cobertura code coverage report."
+            )
 
     # Show info where to find the report
     add_custom_command(TARGET ${Coverage_NAME} POST_BUILD
-        COMMAND ;
-        COMMENT "Cobertura code coverage report saved in ${Coverage_NAME}.xml."
-    )
+            COMMAND ;
+            COMMENT "Cobertura code coverage report saved in ${Coverage_NAME}.xml."
+            )
 
 endfunction() # SETUP_TARGET_FOR_COVERAGE_COBERTURA
 
